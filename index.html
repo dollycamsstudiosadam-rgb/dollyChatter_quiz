@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DollyGirls Chatter Training Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@300;400;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #000000;
+    --surface: #0d0d0d;
+    --surface2: #161616;
+    --border: #2a2a2a;
+    --accent: #ff2ecc;
+    --accent-dim: rgba(255,46,204,0.12);
+    --accent-glow: rgba(255,46,204,0.35);
+    --text: #ffffff;
+    --muted: #777777;
+    --success: #ff2ecc;
+    --danger: #ff4466;
+    --success-dim: rgba(255,46,204,0.1);
+    --danger-dim: rgba(255,68,102,0.1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Nunito Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: -200px; left: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(255,46,204,0.08) 0%, transparent 70%);
+    pointer-events: none;
+    animation: drift 12s ease-in-out infinite alternate;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -200px; right: -200px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(255,46,204,0.05) 0%, transparent 70%);
+    pointer-events: none;
+    animation: drift2 15s ease-in-out infinite alternate;
+  }
+
+  @keyframes drift { from { transform: translate(0,0); } to { transform: translate(40px, 30px); } }
+  @keyframes drift2 { from { transform: translate(0,0); } to { transform: translate(-30px, -40px); } }
+
+  .container {
+    width: 100%;
+    max-width: 680px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    text-align: center;
+    margin-bottom: 40px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .badge {
+    display: inline-block;
+    background: var(--accent-dim);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: 'Nunito', sans-serif;
+    font-size: clamp(28px, 5vw, 42px);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+    color: var(--text);
+  }
+
+  h1 span { color: var(--accent); }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 10px;
+    letter-spacing: 1px;
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 36px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── ENTRY SCREEN ── */
+  .entry-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .entry-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    color: var(--text);
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    margin-bottom: 24px;
+  }
+
+  .entry-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+  }
+
+  .entry-input::placeholder { color: var(--muted); }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .info-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+  }
+
+  .info-box .val {
+    font-family: 'Nunito', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .info-box .lbl {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  /* ── BUTTON ── */
+  .btn {
+    width: 100%;
+    background: var(--accent);
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 16px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+  }
+
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px var(--accent-glow); }
+  .btn:active { transform: translateY(0); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+  }
+
+  .btn-ghost:hover { background: var(--accent-dim); box-shadow: none; }
+
+  /* ── PROGRESS ── */
+  .progress-wrap {
+    margin-bottom: 28px;
+  }
+
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .q-counter {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .q-counter span { color: var(--accent); font-weight: 600; }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 99px;
+    transition: width 0.4s ease;
+    box-shadow: 0 0 8px var(--accent-glow);
+  }
+
+  /* ── QUESTION ── */
+  .section-tag {
+    display: inline-block;
+    font-size: 9px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    border-radius: 2px;
+    margin-bottom: 14px;
+  }
+
+  .question-text {
+    font-family: 'Nunito', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.45;
+    margin-bottom: 24px;
+    color: var(--text);
+  }
+
+  /* ── OPTIONS ── */
+  .options { display: flex; flex-direction: column; gap: 10px; }
+
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+    user-select: none;
+  }
+
+  .option:hover:not(.locked) {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+    transform: translateX(4px);
+  }
+
+  .option.selected {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+  }
+
+  .option.correct {
+    border-color: var(--success);
+    background: var(--success-dim);
+  }
+
+  .option.wrong {
+    border-color: var(--danger);
+    background: var(--danger-dim);
+  }
+
+  .option.locked { cursor: default; pointer-events: none; }
+
+  .opt-letter {
+    min-width: 26px;
+    height: 26px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+
+  .option.selected .opt-letter { border-color: var(--accent); color: var(--accent); }
+  .option.correct .opt-letter  { border-color: var(--success); color: var(--success); background: var(--success-dim); }
+  .option.wrong .opt-letter    { border-color: var(--danger);  color: var(--danger);  background: var(--danger-dim); }
+
+  .opt-text { font-size: 13px; line-height: 1.5; padding-top: 3px; }
+
+  /* ── FEEDBACK ── */
+  .feedback {
+    margin-top: 18px;
+    padding: 14px 18px;
+    border-radius: 8px;
+    font-size: 12px;
+    line-height: 1.6;
+    display: none;
+    animation: fadeUp 0.3s ease both;
+  }
+
+  .feedback.show { display: block; }
+  .feedback.correct-fb { background: var(--success-dim); border: 1px solid var(--success); color: var(--success); }
+  .feedback.wrong-fb   { background: var(--danger-dim);  border: 1px solid var(--danger);  color: var(--danger); }
+
+  /* ── NAV ── */
+  .nav { margin-top: 24px; }
+
+  /* ── RESULTS ── */
+  .result-score {
+    text-align: center;
+    padding: 32px 0 24px;
+  }
+
+  .score-ring {
+    position: relative;
+    width: 130px;
+    height: 130px;
+    margin: 0 auto 20px;
+  }
+
+  .score-ring svg { transform: rotate(-90deg); }
+
+  .score-ring circle {
+    fill: none;
+    stroke-width: 8;
+    stroke-linecap: round;
+  }
+
+  .ring-bg   { stroke: var(--border); }
+  .ring-fill { transition: stroke-dashoffset 1s ease; }
+
+  .score-num {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+
+  .score-num .big {
+    font-family: 'Nunito', sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+  }
+
+  .score-num .pct { font-size: 10px; color: var(--muted); letter-spacing: 2px; }
+
+  .result-label {
+    font-family: 'Nunito', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .result-sub { font-size: 12px; color: var(--muted); margin-bottom: 28px; }
+
+  .result-breakdown {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .rb-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+  }
+
+  .rb-box .num {
+    font-family: 'Nunito', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+  }
+
+  .rb-box .lbl { font-size: 10px; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 2px; }
+  .rb-box.pass .num { color: var(--success); }
+  .rb-box.fail .num { color: var(--danger); }
+
+  .sending-msg {
+    text-align: center;
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 16px;
+    letter-spacing: 1px;
+  }
+
+  /* ── HIDDEN ── */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <div class="badge">Chatter Training</div>
+    <h1><span>Dolly</span>Girls. Knowledge Quiz</h1>
+    <p class="subtitle">Discord · Telegram · Model Comms · Expectations</p>
+  </div>
+
+  <!-- ══ ENTRY SCREEN ══ -->
+  <div class="card screen active" id="screen-entry">
+    <label class="entry-label" for="tg-input">Your Telegram Username</label>
+    <input class="entry-input" id="tg-input" type="text" placeholder="@yourusername" autocomplete="off" />
+
+    <div class="info-grid">
+      <div class="info-box"><div class="val">10</div><div class="lbl">Questions</div></div>
+      <div class="info-box"><div class="val">80%</div><div class="lbl">Pass Mark</div></div>
+    </div>
+
+    <button class="btn" id="start-btn" onclick="startQuiz()">Begin Assessment</button>
+  </div>
+
+  <!-- ══ QUIZ SCREEN ══ -->
+  <div class="card screen" id="screen-quiz">
+    <div class="progress-wrap">
+      <div class="progress-meta">
+        <span class="q-counter">Question <span id="q-num">1</span> of 10</span>
+        <span class="q-counter" id="q-section-label"></span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+
+    <div class="section-tag" id="section-tag"></div>
+    <div class="question-text" id="question-text"></div>
+    <div class="options" id="options-list"></div>
+    <div class="feedback" id="feedback"></div>
+    <div class="nav"><button class="btn" id="next-btn" style="display:none" onclick="nextQuestion()">Next Question →</button></div>
+  </div>
+
+  <!-- ══ RESULTS SCREEN ══ -->
+  <div class="card screen" id="screen-results">
+    <div class="result-score">
+      <div class="score-ring">
+        <svg viewBox="0 0 120 120" width="130" height="130">
+          <circle class="ring-bg" cx="60" cy="60" r="52"/>
+          <circle class="ring-fill" id="ring-fill" cx="60" cy="60" r="52" stroke-dasharray="326.7" stroke-dashoffset="326.7"/>
+        </svg>
+        <div class="score-num">
+          <div class="big" id="score-pct">0%</div>
+          <div class="pct">SCORE</div>
+        </div>
+      </div>
+      <div class="result-label" id="result-label"></div>
+      <div class="result-sub" id="result-sub"></div>
+    </div>
+
+    <div class="result-breakdown">
+      <div class="rb-box pass"><div class="num" id="r-correct">0</div><div class="lbl">Correct</div></div>
+      <div class="rb-box fail"><div class="num" id="r-wrong">0</div><div class="lbl">Incorrect</div></div>
+    </div>
+
+    <div class="sending-msg" id="sending-msg">Saving your result...</div>
+    <button class="btn btn-ghost" id="retry-btn" onclick="retryQuiz()">Retake Quiz</button>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+//  CONFIG — paste your Google Apps Script URL here
+// ══════════════════════════════════════════════
+const WEBHOOK_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE";
+
+// ══════════════════════════════════════════════
+//  QUESTIONS (10 total, drawn from all 4 docs)
+// ══════════════════════════════════════════════
+const questions = [
+  // — DISCORD (2)
+  {
+    section: "Discord",
+    q: "When must you check Discord?",
+    opts: [
+      "Only when a manager @ mentions you",
+      "Before every shift, for updates and announcements",
+      "Once a day, at the end of your shift",
+      "Only when you have a question"
+    ],
+    ans: 1,
+    fb: "You must check Discord before every shift to look for updates, announcements, or important messages."
+  },
+  {
+    section: "Discord",
+    q: "If you are alone in your Discord channel, what is the correct audio setting?",
+    opts: [
+      "Deafen yourself so you can focus",
+      "Mute and deafen — both are fine",
+      "Go on mute only — never deafen",
+      "Disconnect and rejoin when needed"
+    ],
+    ans: 2,
+    fb: "If alone in your channel, only go on mute — never deafen. Managers must be able to speak to you at any time."
+  },
+
+  // — TELEGRAM (2)
+  {
+    section: "Telegram",
+    q: "When a model goes into private (PVT), what must you send via Telegram?",
+    opts: [
+      "A voice note summarising the situation",
+      "Screenshots including what the fan wants, tokens sent, and key details",
+      "Just the token count — nothing else is needed",
+      "A message in the general channel"
+    ],
+    ans: 1,
+    fb: "Always send screenshots that include what the fan wants, how many tokens were sent, and any important details the model needs."
+  },
+  {
+    section: "Telegram",
+    q: "What should Telegram always be used for?",
+    opts: [
+      "Casual team chat and banter",
+      "Sharing personal updates with the team",
+      "Clear, organised, professional communication only",
+      "Storing fan contact details"
+    ],
+    ans: 2,
+    fb: "Telegram must always stay professional, clear, and organised. No shortcuts. No guessing."
+  },
+
+  // — MODEL COMMUNICATION (3)
+  {
+    section: "Model Comms",
+    q: "A fan has sent a custom request on live. What is the correct process?",
+    opts: [
+      "Promise the fan it's fine, then ask the model later",
+      "Decline the request immediately without asking the model",
+      "Take a screenshot, send it to the model, and wait for clear confirmation",
+      "Handle it yourself without involving the model"
+    ],
+    ans: 2,
+    fb: "Always take a screenshot of the custom request, send it to the model, and get clear confirmation before proceeding — never assume or promise anything first."
+  },
+  {
+    section: "Model Comms",
+    q: "A model is not comfortable with a request. What do you do?",
+    opts: [
+      "Try to convince her gently — it might be a big earner",
+      "Escalate to a manager who can persuade her",
+      "Drop it immediately — no pushing, no pressure",
+      "Ask her again once the live session ends"
+    ],
+    ans: 2,
+    fb: "Never, ever force or pressure a model. If she is not comfortable, that is the end of it. Full stop."
+  },
+  {
+    section: "Model Comms",
+    q: "If you have an issue with a model, what is the correct course of action?",
+    opts: [
+      "Discuss it calmly with her directly on the live",
+      "Post about it in the team Discord channel",
+      "Do not argue — message management privately and let it be handled properly",
+      "Ignore it and move on without reporting"
+    ],
+    ans: 2,
+    fb: "Never argue with a model. Message management privately and let it be handled properly."
+  },
+
+  // — EXPECTATIONS (3)
+  {
+    section: "Expectations",
+    q: "Screen sharing during your shift is described as:",
+    opts: [
+      "Recommended when convenient",
+      "Only required for new chatters",
+      "Mandatory — no exceptions",
+      "Optional if you are hitting your targets"
+    ],
+    ans: 2,
+    fb: "Screen sharing is mandatory at all times during your shift. No exceptions. It keeps everything transparent and protects you and the company."
+  },
+  {
+    section: "Expectations",
+    q: "What is the rule on confidentiality?",
+    opts: [
+      "You may share earnings data with close friends outside the team",
+      "Strategies can be shared with other agencies if helpful",
+      "Everything inside the company stays inside the company — no exceptions",
+      "Models' information can be shared in trusted external groups"
+    ],
+    ans: 2,
+    fb: "Everything must stay confidential. No sharing information about models, earnings, strategies, or internal systems with anyone outside the team."
+  },
+  {
+    section: "Expectations",
+    q: "You make a mistake during a shift. What does the company expect you to do?",
+    opts: [
+      "Cover it up and fix it quietly to avoid embarrassment",
+      "Tell a colleague but keep it from management",
+      "Be honest — say it, and the team will fix it together",
+      "Wait until your next review to bring it up"
+    ],
+    ans: 2,
+    fb: "No lying. Be honest with your manager and every member of the team. If you make a mistake, say it. We fix problems together — dishonesty is not acceptable."
+  }
+];
+
+// ══════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════
+let telegramName = "";
+let currentQ = 0;
+let score = 0;
+let answered = false;
+let shuffled = [];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ══════════════════════════════════════════════
+//  START
+// ══════════════════════════════════════════════
+function startQuiz() {
+  const raw = document.getElementById('tg-input').value.trim();
+  if (!raw) { document.getElementById('tg-input').focus(); return; }
+  telegramName = raw.startsWith('@') ? raw : '@' + raw;
+  shuffled = shuffle(questions);
+  currentQ = 0;
+  score = 0;
+  showScreen('screen-quiz');
+  renderQuestion();
+}
+
+document.getElementById('tg-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') startQuiz();
+});
+
+// ══════════════════════════════════════════════
+//  RENDER QUESTION
+// ══════════════════════════════════════════════
+function renderQuestion() {
+  answered = false;
+  const q = shuffled[currentQ];
+  const letters = ['A','B','C','D'];
+
+  document.getElementById('q-num').textContent = currentQ + 1;
+  document.getElementById('section-tag').textContent = q.section;
+  document.getElementById('question-text').textContent = q.q;
+  document.getElementById('progress-fill').style.width = ((currentQ / 10) * 100) + '%';
+  document.getElementById('next-btn').style.display = 'none';
+
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback';
+  fb.textContent = '';
+
+  const list = document.getElementById('options-list');
+  list.innerHTML = '';
+
+  q.opts.forEach((opt, i) => {
+    const div = document.createElement('div');
+    div.className = 'option';
+    div.innerHTML = `<div class="opt-letter">${letters[i]}</div><div class="opt-text">${opt}</div>`;
+    div.onclick = () => selectAnswer(i);
+    list.appendChild(div);
+  });
+}
+
+// ══════════════════════════════════════════════
+//  SELECT ANSWER
+// ══════════════════════════════════════════════
+function selectAnswer(idx) {
+  if (answered) return;
+  answered = true;
+
+  const q = shuffled[currentQ];
+  const options = document.querySelectorAll('.option');
+  options.forEach(o => o.classList.add('locked'));
+  options[idx].classList.add('selected');
+
+  const fb = document.getElementById('feedback');
+
+  if (idx === q.ans) {
+    score++;
+    options[idx].classList.add('correct');
+    fb.className = 'feedback correct-fb show';
+    fb.textContent = '✓ Correct — ' + q.fb;
+  } else {
+    options[idx].classList.add('wrong');
+    options[q.ans].classList.add('correct');
+    fb.className = 'feedback wrong-fb show';
+    fb.textContent = '✗ Incorrect — ' + q.fb;
+  }
+
+  document.getElementById('next-btn').style.display = 'block';
+}
+
+// ══════════════════════════════════════════════
+//  NEXT / RESULTS
+// ══════════════════════════════════════════════
+function nextQuestion() {
+  currentQ++;
+  if (currentQ < 10) {
+    renderQuestion();
+  } else {
+    showResults();
+  }
+}
+
+function showResults() {
+  showScreen('screen-results');
+
+  const pct = Math.round((score / 10) * 100);
+  const passed = pct >= 80;
+
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-pct').style.color = passed ? 'var(--success)' : 'var(--danger)';
+  document.getElementById('r-correct').textContent = score;
+  document.getElementById('r-wrong').textContent = 10 - score;
+  document.getElementById('result-label').textContent = passed ? '🎉 You Passed!' : '❌ Not Quite';
+  document.getElementById('result-label').style.color = passed ? 'var(--success)' : 'var(--danger)';
+  document.getElementById('result-sub').textContent = passed
+    ? `Great work, ${telegramName}. You're cleared to move forward.`
+    : `${telegramName}, you needed 80% to pass. Review the material and try again.`;
+
+  // Animate ring
+  const ring = document.getElementById('ring-fill');
+  const circumference = 326.7;
+  ring.style.stroke = passed ? 'var(--success)' : 'var(--danger)';
+  setTimeout(() => {
+    ring.style.strokeDashoffset = circumference - (circumference * pct / 100);
+  }, 100);
+
+  sendToSheets(telegramName, pct, score, passed);
+}
+
+// ══════════════════════════════════════════════
+//  RETRY
+// ══════════════════════════════════════════════
+function retryQuiz() {
+  shuffled = shuffle(questions);
+  currentQ = 0;
+  score = 0;
+  showScreen('screen-quiz');
+  renderQuestion();
+}
+
+// ══════════════════════════════════════════════
+//  SCREEN TOGGLE
+// ══════════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ══════════════════════════════════════════════
+//  GOOGLE SHEETS WEBHOOK
+// ══════════════════════════════════════════════
+async function sendToSheets(telegram, pct, correct, passed) {
+  const msg = document.getElementById('sending-msg');
+  if (!WEBHOOK_URL || WEBHOOK_URL === "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE") {
+    msg.textContent = "⚠ No webhook configured — result not saved.";
+    return;
+  }
+  try {
+    const payload = {
+      telegram,
+      section: "Section 1 – Foundations",
+      score: pct,
+      correct,
+      wrong: 10 - correct,
+      passed: passed ? "PASS" : "FAIL",
+      timestamp: new Date().toISOString()
+    };
+    await fetch(WEBHOOK_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    msg.textContent = "✓ Result saved successfully.";
+  } catch (e) {
+    msg.textContent = "⚠ Could not save result — check webhook URL.";
+  }
+}
+</script>
+</body>
+</html>
