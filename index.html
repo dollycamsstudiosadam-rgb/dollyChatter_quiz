@@ -451,7 +451,7 @@
     <input class="entry-input" id="tg-input" type="text" placeholder="@yourusername" autocomplete="off" />
 
     <div class="info-grid">
-      <div class="info-box"><div class="val">10</div><div class="lbl">Questions</div></div>
+      <div class="info-box"><div class="val">13</div><div class="lbl">Questions</div></div>
       <div class="info-box"><div class="val">80%</div><div class="lbl">Pass Mark</div></div>
     </div>
 
@@ -462,7 +462,7 @@
   <div class="card screen" id="screen-quiz">
     <div class="progress-wrap">
       <div class="progress-meta">
-        <span class="q-counter">Question <span id="q-num">1</span> of 10</span>
+        <span class="q-counter">Question <span id="q-num">1</span> of 13</span>
         <span class="q-counter" id="q-section-label"></span>
       </div>
       <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
@@ -506,10 +506,10 @@
 // ══════════════════════════════════════════════
 //  CONFIG — paste your Google Apps Script URL here
 // ══════════════════════════════════════════════
-const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwtD6KkKFgbk4oC2BTnQNWP6xbjUrYQp3gWt0zjGDIj3enzmR_z8dnVL38hAz9Nw0dx/exec";
+const WEBHOOK_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE";
 
 // ══════════════════════════════════════════════
-//  QUESTIONS (10 total, drawn from all 4 docs)
+//  QUESTIONS (13 total, drawn from all 5 docs)
 // ══════════════════════════════════════════════
 const questions = [
   // — DISCORD (2)
@@ -638,6 +638,44 @@ const questions = [
     ],
     ans: 2,
     fb: "No lying. Be honest with your manager and every member of the team. If you make a mistake, say it. We fix problems together — dishonesty is not acceptable."
+  },
+
+  // — PRIVATE SESSIONS (3)
+  {
+    section: "Private Sessions",
+    q: "Before or as a private session starts, what must you send the model?",
+    opts: [
+      "Just a quick heads up that she is going into private",
+      "The fan's username only so she knows who it is",
+      "Full details — what the fan wants, recent chat logs, token balance, and any extra notes",
+      "A message asking if she is ready"
+    ],
+    ans: 2,
+    fb: "Always send the model full details before or as the private starts — what the fan wants, recent chat logs, how many tokens they have, and any extra notes. This helps her deliver a better experience."
+  },
+  {
+    section: "Private Sessions",
+    q: "While a model is in a private session, what should you do with the fan she is speaking to?",
+    opts: [
+      "Continue chatting to him to keep him warm",
+      "Do not message that fan — she is speaking to him directly",
+      "Send him a tip request while he is spending",
+      "Ask him how the private is going"
+    ],
+    ans: 1,
+    fb: "When the model is in private, do not message that fan. She is speaking to him directly — do not interfere."
+  },
+  {
+    section: "Private Sessions",
+    q: "If a technical issue occurs during a private session, what is the correct action?",
+    opts: [
+      "Ask the fan to be patient and wait for it to resolve",
+      "Ignore it — technical issues are not your responsibility",
+      "Argue the case if the fan complains — it was not your fault",
+      "Issue a refund immediately — protect the account first, no arguing"
+    ],
+    ans: 3,
+    fb: "Always issue a refund if there is a technical issue during a private. Do not argue. Users can report accounts or leave bad reviews — we protect the account first."
   }
 ];
 
@@ -688,7 +726,7 @@ function renderQuestion() {
   document.getElementById('q-num').textContent = currentQ + 1;
   document.getElementById('section-tag').textContent = q.section;
   document.getElementById('question-text').textContent = q.q;
-  document.getElementById('progress-fill').style.width = ((currentQ / 10) * 100) + '%';
+  document.getElementById('progress-fill').style.width = ((currentQ / 13) * 100) + '%';
   document.getElementById('next-btn').style.display = 'none';
 
   const fb = document.getElementById('feedback');
@@ -741,7 +779,7 @@ function selectAnswer(idx) {
 // ══════════════════════════════════════════════
 function nextQuestion() {
   currentQ++;
-  if (currentQ < 10) {
+  if (currentQ < 13) {
     renderQuestion();
   } else {
     showResults();
@@ -751,13 +789,13 @@ function nextQuestion() {
 function showResults() {
   showScreen('screen-results');
 
-  const pct = Math.round((score / 10) * 100);
+  const pct = Math.round((score / 13) * 100);
   const passed = pct >= 80;
 
   document.getElementById('score-pct').textContent = pct + '%';
   document.getElementById('score-pct').style.color = passed ? 'var(--success)' : 'var(--danger)';
   document.getElementById('r-correct').textContent = score;
-  document.getElementById('r-wrong').textContent = 10 - score;
+  document.getElementById('r-wrong').textContent = 13 - score;
   document.getElementById('result-label').textContent = passed ? '🎉 You Passed!' : '❌ Not Quite';
   document.getElementById('result-label').style.color = passed ? 'var(--success)' : 'var(--danger)';
   document.getElementById('result-sub').textContent = passed
@@ -809,7 +847,7 @@ async function sendToSheets(telegram, pct, correct, passed) {
       section: "Section 1 – Foundations",
       score: pct,
       correct,
-      wrong: 10 - correct,
+      wrong: 13 - correct,
       passed: passed ? "PASS" : "FAIL",
       timestamp: new Date().toISOString()
     };
